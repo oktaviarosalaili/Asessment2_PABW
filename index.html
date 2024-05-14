@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Buku</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Daftar Buku</h1>
+    <table border="1" id="booksTable">
+        <thead>
+            <tr>
+                <th>Book_ID</th>
+                <th>Judul</th>
+                <th>User_ID</th>
+                <th>Genre</th>
+                <th>Sinopsis</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function(){
+            // Panggil data buku dengan AJAX
+            $.ajax({
+                url: 'get_book.php', // Pastikan path ini benar
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var booksTable = $('#booksTable tbody');
+                    booksTable.empty();
+                    
+                    // Proses hasil panggilan AJAX dan tampilkan dalam bentuk tabel
+                    $.each(data, function(index, book) {
+                        booksTable.append('<tr>' +
+                            '<td>' + book.Book_ID + '</td>' +
+                            '<td>' + book.Judul + '</td>' +
+                            '<td>' + book.User_ID + '</td>' +
+                            '<td>' + book.Genre + '</td>' +
+                            '<td>' + book.Sinopsis + '</td>' +
+                            '<td><button onclick="deleteBook(' + book.Book_ID + ')">Hapus</button></td>' +
+                        '</tr>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: ' + error);
+                    alert('Gagal mengambil data buku.');
+                }
+            });
+        });
+
+        function deleteBook(bookID) {
+            // Hapus data buku dengan AJAX
+            $.ajax({
+                url: 'delete_book.php',
+                type: 'GET',
+                data: { Book_ID: bookID },
+                success: function(response) {
+                    alert(response);
+                    location.reload(); // Refresh halaman untuk memperbarui tabel
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: ' + error);
+                    alert('Gagal menghapus data.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
